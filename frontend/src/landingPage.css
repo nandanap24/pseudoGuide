@@ -1,0 +1,13 @@
+.landing-page {
+    text-align: center;
+    padding: 50px;
+}
+
+.landing-page h1 {
+    font-size: 3em;
+    color: #333;
+}
+
+.landing-page button {
+    margin-top: 20px;
+}
