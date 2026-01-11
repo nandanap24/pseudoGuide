@@ -76,12 +76,12 @@ pseudoGuide/
 │   └── package-lock.json
 │
 └── README.md
-
+````
 
 ## Prerequisites
 
 - Node.js (v14 or higher)
-- PostgreSQL v13 or higher
+- PostgreSQL v14 or higher
 - npm
 
 ## Installation & Setup
@@ -89,70 +89,74 @@ pseudoGuide/
 ### 1. Clone the Repository
 
 git clone git@github.com:nandanap24/pseudoGuide.git
+
 cd pseudoGuide
 
 
 ### 2. Backend Setup
 
-```bash
-# Navigate to backend directory
+
+#### Navigate to backend directory
 cd backend
 
-# Install dependencies
+#### Install dependencies
 npm install
 
-## Configure Environment Variables
+#### Configure Environment Variables
 
 Create a .env file using .env.example:
-
+```
 PORT=5000
 DATABASE_URL=postgresql://username:password@localhost:5432/pseudocode_checker
 NODE_ENV=development
-
-## Prisma Setup & Database Seeding
-# Run database migrations
+```
+#### Prisma Setup & Database Seeding
+##### Run database migrations
 npx prisma migrate dev
 
-# Seed the database with sample questions
-node utils/seedDB.js
+#### Seed the database with sample questions
+node run seed
 
-Start Backend Server
+#### Start Backend Server
 npm start
 
 
-For development with auto-restart:
+#### For development with auto-restart:
 
 npm run dev
 
-
+```
 The backend will run on:
 http://localhost:5000
+```
 
-3. Frontend Setup
+### 3. Frontend Setup
 
 Open a new terminal:
 
-# Navigate to frontend directory
+#### Navigate to frontend directory
 cd frontend
 
-# Install dependencies
+#### Install dependencies
 npm install
 
-# Start the React development server
+#### Start the React development server
 npm start
 
-
+```
 The frontend will run on:
 http://localhost:3000
-
-Environment Variables
+```
+### Environment Variables
 
 Backend (backend/.env)
+```
 PORT=5000
 DATABASE_URL=postgresql://username:password@localhost:5432/pseudocode_checker
 NODE_ENV=development
-
+```
 Frontend (frontend/.env)
+```
 REACT_APP_API_URL=http://localhost:5000/api
 ```
 
@@ -246,7 +250,7 @@ model Question {
   answers     Json
   createdAt   DateTime @default(now())
 }
-
+```
 ## Sample Questions
 
 The application comes pre-seeded with 9 questions:
