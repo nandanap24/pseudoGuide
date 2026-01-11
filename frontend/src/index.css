@@ -1,0 +1,88 @@
+/* index.css */
+
+/* index.css / Global Styles */
+
+/* This prevents the whole page from scrolling, only the columns scroll */
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* Custom soft colors for badges */
+.bg-success-soft {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+.bg-warning-soft {
+  background-color: #fff3cd;
+  color: #664d03;
+}
+
+/* The Editor needs to look dark and modern */
+.code-editor {
+  background-color: #1e1e1e !important;
+  color: #d4d4d4 !important;
+  font-family: "Fira Code", "Courier New", monospace;
+  padding: 20px;
+  border: none;
+  height: 100%;
+}
+
+/* Clean up the scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 10px;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.error-line {
+  background-color: #f8d7da;
+  border-left: 4px solid #dc3545;
+  padding: 8px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+
+.correct-status {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.partial-status {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.incorrect-status {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.code-editor {
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 300px;
+  resize: vertical;
+}
+
+.question-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.difficulty-badge {
+  font-size: 0.85rem;
+  padding: 0.35rem 0.65rem;
+}

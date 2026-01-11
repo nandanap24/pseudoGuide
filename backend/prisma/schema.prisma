@@ -1,0 +1,27 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Question {
+  id          Int      @id @default(autoincrement())
+  difficulty  String
+  title       String
+  description String
+  answers     Answer[]
+  createdAt   DateTime @default(now())
+}
+
+model Answer {
+  id         Int      @id @default(autoincrement())
+  code       Json
+  questionId Int
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+

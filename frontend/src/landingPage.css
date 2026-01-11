@@ -1,0 +1,74 @@
+/* --- Independent Scroll Layout --- */
+.vh-100 {
+  height: 100vh !important;
+}
+.overflow-hidden {
+  overflow: hidden !important;
+}
+
+.overflow-auto {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* --- Sidebar Filter Alignment --- */
+.sidebar-filter-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  /* Removed negative margin to keep it strictly aligned with parent padding */
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  color: #4b5563;
+}
+
+.sidebar-filter-item:hover {
+  background: #f3f4f6;
+  color: #0d6efd;
+}
+
+.sidebar-filter-item.active {
+  background: #e5e7eb;
+  color: #0d6efd;
+  font-weight: 600;
+}
+
+/* Radio Button Styling */
+.filter-radio {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #cbd5e0;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.filter-radio.checked::after {
+  content: "";
+  width: 9px;
+  height: 9px;
+  background: #0d6efd;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Form Check Alignment */
+.form-check {
+  padding-left: 1.8rem; /* Correct indentation for standard checkboxes */
+}
+
+/* Question Card Styling */
+.question-card {
+  border: 1px solid #e2e8f0 !important;
+  transition: all 0.2s ease-in-out;
+  background: #ffffff;
+}
+
+.question-card:hover {
+  border-color: #0d6efd !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06) !important;
+}
