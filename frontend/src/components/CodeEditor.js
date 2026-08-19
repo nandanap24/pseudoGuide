@@ -1,94 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import { checkPseudocode } from '../services/api';
+import React, { useState, useEffect } from "react";
+import { checkPseudocode } from "../services/api";
 
-function CodeEditor({ question, onSubmissionResult, onReset }) {
-  const [userCode, setUserCode] = useState('');
+function CodeEditor({ question, onSubmissionResult }) {
+  const [userCode, setUserCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    setUserCode('');
-    setError(null);
+    setUserCode("");
   }, [question]);
 
   const handleSubmit = async () => {
-    if (!userCode.trim()) {
-      setError('Please enter some pseudocode before submitting');
-      return;
-    }
-
     setSubmitting(true);
-    setError(null);
-
     try {
-      const result = await checkPseudocode(question._id, userCode);
+      const result = await checkPseudocode(question.id, userCode);
       onSubmissionResult(result);
     } catch (err) {
-      setError(err.message || 'Failed to check pseudocode');
+      console.error(err);
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleClear = () => {
-    setUserCode('');
-    setError(null);
-    onReset();
-  };
-
   return (
-    <div className="card mb-3">
-      <div className="card-header">
-        <h5 className="mb-0">{question.title}</h5>
-      </div>
-      <div className="card-body">
-        <p className="text-muted">{question.description}</p>
-        
-        <div className="mb-3">
-          <label htmlFor="codeEditor" className="form-label fw-bold">
-            Your Pseudocode:
-          </label>
-          <textarea
-            id="codeEditor"
-            className="form-control code-editor"
-            value={userCode}
-            onChange={(e) => setUserCode(e.target.value)}
-            placeholder="START&#10;READ n&#10;..."
-            disabled={submitting}
-          />
+    <div className="d-flex flex-column h-100">
+      {/* PROFESSIONAL TOOLBAR */}
+      <div className="bg-light border-bottom py-2 px-3 d-flex justify-content-between align-items-center">
+        <div className="d-flex align-items-center gap-2">
+          <span className="text-muted small fw-bold">main.pseudo</span>
         </div>
-
-        {error && (
-          <div className="alert alert-danger" role="alert">
-            {error}
-          </div>
-        )}
-
-        <div className="d-flex gap-2">
-          <button
-            className="btn btn-primary"
-            onClick={handleSubmit}
-            disabled={submitting || !userCode.trim()}
-          >
-            {submitting ? (
-              <>
-                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                Checking...
-              </>
-            ) : (
-              'Submit'
-            )}
-          </button>
-          
-          <button
-            className="btn btn-secondary"
-            onClick={handleClear}
-            disabled={submitting}
-          >
-            Clear
-          </button>
-        </div>
+        <button
+          className="btn btn-success btn-sm px-4 fw-bold shadow-sm"
+          onClick={handleSubmit}
+          disabled={submitting}
+        >
+          {submitting ? "Running..." : "Submit"}
+        </button>
       </div>
+
+      {/* SEAMLESS TEXTAREA */}
+      <textarea
+        className="form-control border-0 flex-grow-1 p-4 font-monospace fs-5"
+        style={{
+          backgroundColor: "#fcfcfc",
+          resize: "none",
+          outline: "none",
+          minHeight: "0",
+        }}
+        value={userCode}
+        onChange={(e) => setUserCode(e.target.value)}
+        placeholder="BEGIN&#10;  // Write your logic here...&#10;END"
+      />
     </div>
   );
 }

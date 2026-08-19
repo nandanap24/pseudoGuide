@@ -1,99 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import { fetchQuestions } from '../services/api';
+import React from "react";
 
-function QuestionList({ difficulty, selectedQuestion, onQuestionSelect }) {
-  const [questions, setQuestions] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const loadQuestions = async () => {
-      setLoading(true);
-      setError(null);
-      
-      try {
-        const response = await fetchQuestions(difficulty);
-        setQuestions(response.data || []);
-      } catch (err) {
-        setError(err.message || 'Failed to load questions');
-        setQuestions([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (difficulty) {
-      loadQuestions();
-    }
-  }, [difficulty]);
-
-  const getDifficultyBadgeClass = (diff) => {
-    switch (diff) {
-      case 'easy':
-        return 'bg-success';
-      case 'medium':
-        return 'bg-warning';
-      case 'hard':
-        return 'bg-danger';
-      default:
-        return 'bg-secondary';
-    }
-  };
-
-  if (loading) {
+function QuestionList({ questions, onQuestionSelect, solvedIds = [] }) {
+  if (!questions || questions.length === 0) {
     return (
-      <div className="card">
-        <div className="card-body text-center">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="card">
-        <div className="card-body">
-          <div className="alert alert-danger" role="alert">
-            {error}
-          </div>
-        </div>
+      <div className="text-center p-5 border rounded bg-white">
+        No challenges match your filters.
       </div>
     );
   }
 
   return (
-    <div className="card">
-      <div className="card-header">
-        <h5 className="mb-0">Available Questions</h5>
-      </div>
-      <div className="list-group list-group-flush">
-        {questions.length === 0 ? (
-          <div className="list-group-item text-center text-muted">
-            No questions available
-          </div>
-        ) : (
-          questions.map((question) => (
-            <button
-              key={question._id}
-              className={`list-group-item list-group-item-action question-card ${
-                selectedQuestion?._id === question._id ? 'active' : ''
-              }`}
-              onClick={() => onQuestionSelect(question)}
-            >
-              <div className="d-flex w-100 justify-content-between align-items-center">
-                <h6 className="mb-1">{question.title}</h6>
-                <span className={`badge difficulty-badge ${getDifficultyBadgeClass(question.difficulty)}`}>
-                  {question.difficulty}
-                </span>
+    <div className="d-flex flex-column gap-3">
+      {questions.map((q) => (
+        <div key={q.id} className="card question-card border-0 shadow-sm">
+          <div className="card-body d-flex justify-content-between align-items-center p-4">
+            <div className="flex-grow-1">
+              <div className="d-flex align-items-center gap-2 mb-1">
+                <h5 className="fw-bold mb-0 text-primary">{q.title}</h5>
+                {solvedIds.includes(q.id) && (
+                  <span className="badge bg-success-subtle text-success border border-success-subtle px-2">
+                    ✓ Solved
+                  </span>
+                )}
               </div>
-              <p className="mb-0 small text-muted">{question.description}</p>
+              <div className="d-flex gap-3 small text-muted">
+                <span className="text-capitalize fw-bold">{q.difficulty}</span>
+                <span>Score: 10</span>
+              </div>
+            </div>
+            <button
+              className="btn btn-outline-primary px-4 fw-bold rounded-pill"
+              onClick={() => onQuestionSelect(q)}
+            >
+              {solvedIds.includes(q.id) ? "Review" : "Solve Challenge"}
             </button>
-          ))
-        )}
-      </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

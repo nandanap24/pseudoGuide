@@ -1,37 +1,29 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL =
+  process.env.REACT_APP_API_URL || "http://localhost:5000/api";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { "Content-Type": "application/json" },
 });
 
-/**
- * Fetch questions by difficulty
- * @param {string} difficulty - easy, medium, or hard
- * @returns {Promise} - Questions data
- */
-export const fetchQuestions = async (difficulty) => {
+export const fetchQuestions = async (difficulties = []) => {
   try {
-    const response = await api.get(`/questions?difficulty=${difficulty}`);
+    // If array is empty, query becomes "" (empty string).
+    // Request is just: GET /api/questions
+    const query =
+      difficulties.length > 0 ? `?difficulty=${difficulties.join(",")}` : "";
+    const response = await api.get(`/questions${query}`);
     return response.data;
   } catch (error) {
     throw error.response?.data || error;
   }
 };
 
-/**
- * Check user pseudocode submission
- * @param {string} questionId - Question ID
- * @param {string} userCode - User's pseudocode
- * @returns {Promise} - Validation result
- */
 export const checkPseudocode = async (questionId, userCode) => {
   try {
-    const response = await api.post('/check-pseudocode', {
+    const response = await api.post("/check-pseudocode", {
       questionId,
       userCode,
     });

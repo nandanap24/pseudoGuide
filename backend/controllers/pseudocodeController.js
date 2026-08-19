@@ -1,103 +1,106 @@
-const Question = require('../models/Question');
-const { matchPseudocode } = require('../services/pseudocodeMatcher');
+const prisma = require("../config/db");
+const { matchPseudocode } = require("../services/pseudocodeMatcher");
 
 /**
- * Get questions by difficulty
- * GET /api/questions?difficulty=easy
+ * GET /api/questions
+ * Supports difficulty filter (?difficulty=easy,medium)
  */
+// GET /api/questions/:id
+const getQuestionById = async (req, res) => {
+  const id = Number(req.params.id);
+
+  const question = await prisma.question.findUnique({
+    where: { id },
+    include: { answers: true },
+  });
+
+  if (!question) {
+    return res.status(404).json({ success: false });
+  }
+
+  res.json({ success: true, data: question });
+};
+
 const getQuestions = async (req, res) => {
   try {
     const { difficulty } = req.query;
-    
-    if (!difficulty) {
-      return res.status(400).json({
-        success: false,
-        message: 'Difficulty parameter is required'
-      });
+
+    let where = {};
+
+    if (difficulty) {
+      where.difficulty = {
+        in: difficulty.split(",").map((d) => d.trim().toLowerCase()),
+      };
     }
-    
-    const validDifficulties = ['easy', 'medium', 'hard'];
-    if (!validDifficulties.includes(difficulty.toLowerCase())) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid difficulty. Must be: easy, medium, or hard'
-      });
-    }
-    
-    const questions = await Question.find({ 
-      difficulty: difficulty.toLowerCase() 
-    }).select('-answers');
-    
+
+    const questions = await prisma.question.findMany({
+      where,
+      select: {
+        id: true,
+        difficulty: true,
+        title: true,
+        description: true,
+        createdAt: true,
+      },
+    });
+
     res.json({
       success: true,
       count: questions.length,
-      data: questions
+      data: questions,
     });
   } catch (error) {
-    console.error('Error fetching questions:', error);
+    console.error("Error fetching questions:", error);
     res.status(500).json({
       success: false,
-      message: 'Server error while fetching questions'
+      message: "Server error while fetching questions",
     });
   }
 };
 
-/**
- * Check user pseudocode against correct answers
- * POST /api/check-pseudocode
- */
 const checkPseudocode = async (req, res) => {
   try {
     const { questionId, userCode } = req.body;
-    
-    if (!questionId) {
+
+    if (!questionId || !userCode) {
       return res.status(400).json({
         success: false,
-        message: 'Question ID is required'
+        message: "Missing fields",
       });
     }
-    
-    if (!userCode || typeof userCode !== 'string') {
-      return res.status(400).json({
-        success: false,
-        message: 'User code is required and must be a string'
-      });
-    }
-    
-    const question = await Question.findById(questionId);
-    
+
+    const question = await prisma.question.findUnique({
+      where: { id: Number(questionId) },
+      include: { answers: true },
+    });
+
     if (!question) {
       return res.status(404).json({
         success: false,
-        message: 'Question not found'
+        message: "Question not found",
       });
     }
-    
-    const result = matchPseudocode(userCode, question.answers);
-    
+
+    // 🔑 Extract JSON answers
+    const validAnswers = question.answers.map((a) => a.code);
+    const result = matchPseudocode(userCode, validAnswers);
+
     res.json({
       success: true,
       status: result.status,
-      errors: result.errors
+      errors: result.errors,
     });
   } catch (error) {
-    console.error('Error checking pseudocode:', error);
-    
-    if (error.name === 'CastError') {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid question ID format'
-      });
-    }
-    
+    console.error("Error checking pseudocode:", error);
     res.status(500).json({
       success: false,
-      message: 'Server error while checking pseudocode'
+      message: "Server error",
     });
   }
 };
 
 module.exports = {
   getQuestions,
-  checkPseudocode
+  getQuestionById,
+  checkPseudocode,
 };

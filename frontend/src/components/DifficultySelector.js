@@ -1,32 +1,39 @@
-import React from 'react';
+import React from "react";
 
-function DifficultySelector({ selectedDifficulty, onDifficultyChange }) {
-  const difficulties = [
-    { value: 'easy', label: 'Easy', variant: 'success' },
-    { value: 'medium', label: 'Medium', variant: 'warning' },
-    { value: 'hard', label: 'Hard', variant: 'danger' },
-  ];
+function DifficultySelector({ selectedDifficulties, onDifficultyChange }) {
+  const difficulties = ["easy", "medium", "hard"];
+
+  const handleToggle = (level) => {
+    // HackerRank Logic: If already in the list, remove it. If not, add it.
+    if (selectedDifficulties.includes(level)) {
+      onDifficultyChange(selectedDifficulties.filter((d) => d !== level));
+    } else {
+      onDifficultyChange([...selectedDifficulties, level]);
+    }
+  };
 
   return (
-    <div className="card">
-      <div className="card-body">
-        <h5 className="card-title">Select Difficulty Level</h5>
-        <div className="d-grid gap-2 d-md-flex">
-          {difficulties.map((difficulty) => (
-            <button
-              key={difficulty.value}
-              className={`btn btn-${difficulty.variant} ${
-                selectedDifficulty === difficulty.value ? 'active' : ''
-              }`}
-              onClick={() => onDifficultyChange(difficulty.value)}
-            >
-              {difficulty.label}
-            </button>
-          ))}
+    <div className="d-flex flex-column gap-1">
+      {difficulties.map((level) => (
+        <div
+          key={level}
+          className={`sidebar-filter-item ${
+            selectedDifficulties.includes(level) ? "active" : ""
+          }`}
+          onClick={() => handleToggle(level)}
+        >
+          {/* Custom checkbox/radio circle */}
+          <div
+            className={`filter-radio me-3 ${
+              selectedDifficulties.includes(level) ? "checked" : ""
+            }`}
+          ></div>
+          <span className="text-capitalize fw-semibold">{level}</span>
         </div>
-      </div>
+      ))}
     </div>
   );
 }
 
+// THIS LINE IS ESSENTIAL TO FIX THE "Attempted import error"
 export default DifficultySelector;
