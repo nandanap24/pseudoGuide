@@ -1,13 +1,3 @@
-/**
- * Normalizes a single pseudocode line for comparison.
- *
- * Converts to lowercase
- * Removes extra whitespace
- * Trims leading/trailing spaces
- *
- * @param {string} line - The line to normalize
- * @returns {string} - Normalized line
- */
 const normalizeLine = (line) => {
   if (typeof line !== "string") {
     return "";
@@ -17,8 +7,7 @@ const normalizeLine = (line) => {
 };
 
 /**
- * Normalizes an array of pseudocode lines.
- *
+ * Normalizes an array of lines
  * @param {string[]} lines - Array of lines to normalize
  * @returns {string[]} - Array of normalized lines
  */
@@ -33,9 +22,8 @@ const normalizeLines = (lines) => {
 };
 
 /**
- * Splits multiline pseudocode into normalized lines.
- *
- * @param {string} text - Multiline pseudocode
+ * Splits multiline text into array of normalized lines
+ * @param {string} text - Multiline text
  * @returns {string[]} - Array of normalized lines
  */
 const parseUserCode = (text) => {

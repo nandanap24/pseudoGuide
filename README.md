@@ -2,6 +2,8 @@
 
 A production-quality web application that evaluates user-submitted pseudocode against predefined correct solutions with precise, line-level feedback.
 
+The system supports difficulty-based questions, multiple valid answers, and clear visual feedback to help users understand logical mistakes in their pseudocode.
+
 ## Features
 
 - **Difficulty-Based Questions**: Easy, Medium, and Hard levels
@@ -14,125 +16,146 @@ A production-quality web application that evaluates user-submitted pseudocode ag
 ## Technology Stack
 
 ### Backend
+
 - Node.js
 - Express.js
-- MongoDB
-- Mongoose
+- PostgreSQL
+- Prisma ORM
 
 ### Frontend
+
 - React.js (functional components)
 - Bootstrap 5
 - Axios
 
 ## Project Structure
 
-```
-nan-project/
+````
+pseudoGuide/
 ├── backend/
 │   ├── config/
-│   │   └── db.js                  # MongoDB connection
+│   │   └── db.js                     # Prisma client setup
 │   ├── controllers/
-│   │   └── pseudocodeController.js # API controllers
-│   ├── models/
-│   │   └── Question.js             # Mongoose schema
+│   │   └── pseudocodeController.js   # Request handling logic
+│   ├── prisma/
+│   │   └── schema.prisma             # Prisma schema (PostgreSQL)
 │   ├── routes/
-│   │   └── pseudocodeRoutes.js     # API routes
+│   │   └── pseudocodeRoutes.js       # API routes
 │   ├── services/
-│   │   └── pseudocodeMatcher.js    # Comparison logic
+│   │   └── pseudocodeMatcher.js      # Core comparison logic
 │   ├── utils/
-│   │   ├── normalizeLine.js        # Text normalization
-│   │   └── seedDB.js               # Database seeding
-│   ├── app.js                      # Express app setup
-│   ├── server.js                   # Server entry point
+│   │   ├── normalizeLine.js          # Line normalization helpers
+│   │   └── seedDB.js                 # Database seeding
+│   ├── app.js                        # Express app configuration
+│   ├── server.js                     # Server entry point
+│   ├── testPrisma.js                 # Prisma connection testing
+│   ├── envTest.js                    # Environment testing
+│   ├── .env.example
+│   ├── .gitignore
 │   ├── package.json
-│   └── .env
+│   └── package-lock.json
 │
-└── frontend/
-    ├── public/
-    │   └── index.html
-    ├── src/
-    │   ├── components/
-    │   │   ├── DifficultySelector.js
-    │   │   ├── QuestionList.js
-    │   │   ├── CodeEditor.js
-    │   │   └── ResultViewer.js
-    │   ├── services/
-    │   │   └── api.js              # Axios API calls
-    │   ├── App.js
-    │   ├── index.js
-    │   └── index.css
-    ├── package.json
-    └── .env
-```
+├── frontend/
+│   ├── public/
+│   │   └── index.html
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── CodeEditor.js
+│   │   │   ├── DifficultySelector.js
+│   │   │   ├── LandingPage.js
+│   │   │   ├── QuestionList.js
+│   │   │   └── ResultViewer.js
+│   │   ├── services/
+│   │   │   └── api.js                # Axios API calls
+│   │   ├── App.js
+│   │   ├── index.js
+│   │   ├── index.css
+│   │   └── landingPage.css
+│   ├── .gitignore
+│   ├── package.json
+│   └── package-lock.json
+│
+└── README.md
+````
 
 ## Prerequisites
 
 - Node.js (v14 or higher)
-- MongoDB (v4.4 or higher)
-- npm or yarn
+- PostgreSQL v14 or higher
+- npm
 
 ## Installation & Setup
 
 ### 1. Clone the Repository
 
-```bash
-cd C:\Users\amal\Downloads\nan-project
-```
+git clone git@github.com:nandanap24/pseudoGuide.git
+
+cd pseudoGuide
+
 
 ### 2. Backend Setup
 
-```bash
-# Navigate to backend directory
+
+#### Navigate to backend directory
 cd backend
 
-# Install dependencies
+#### Install dependencies
 npm install
 
-# Make sure MongoDB is running on your system
-# Windows: Start MongoDB service
-# Or use MongoDB Compass or MongoDB Atlas
+#### Configure Environment Variables
 
-# Seed the database with sample questions
-npm run seed
+Create a .env file using .env.example:
+```
+PORT=5000
+DATABASE_URL=postgresql://username:password@localhost:5432/pseudocode_checker
+NODE_ENV=development
+```
+#### Prisma Setup & Database Seeding
+##### Run database migrations
+npx prisma migrate dev
 
-# Start the backend server
+#### Seed the database with sample questions
+node run seed
+
+#### Start Backend Server
 npm start
 
-# For development with auto-restart:
-npm run dev
-```
 
-The backend will run on `http://localhost:5000`
+#### For development with auto-restart:
+
+npm run dev
+
+```
+The backend will run on:
+http://localhost:5000
+```
 
 ### 3. Frontend Setup
 
 Open a new terminal:
 
-```bash
-# Navigate to frontend directory
+#### Navigate to frontend directory
 cd frontend
 
-# Install dependencies
+#### Install dependencies
 npm install
 
-# Start the React development server
+#### Start the React development server
 npm start
+
 ```
+The frontend will run on:
+http://localhost:3000
+```
+### Environment Variables
 
-The frontend will run on `http://localhost:3000`
-
-## Environment Variables
-
-### Backend (.env)
-
+Backend (backend/.env)
 ```
 PORT=5000
-MONGODB_URI=mongodb://localhost:27017/pseudocode-checker
+DATABASE_URL=postgresql://username:password@localhost:5432/pseudocode_checker
 NODE_ENV=development
 ```
-
-### Frontend (.env)
-
+Frontend (frontend/.env)
 ```
 REACT_APP_API_URL=http://localhost:5000/api
 ```
@@ -146,6 +169,7 @@ GET /api/questions?difficulty=easy
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -168,14 +192,16 @@ POST /api/check-pseudocode
 ```
 
 **Request Body:**
+
 ```json
 {
-  "questionId": "mongodb_object_id",
+  "questionId": 1,
   "userCode": "START\nREAD n\nIF n % 2 == 0 THEN\nPRINT Even\nELSE\nPRINT Odd\nEND"
 }
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -213,25 +239,36 @@ POST /api/check-pseudocode
     // Additional valid answers...
   ],
   createdAt: Date,
-  updatedAt: Date
 }
 ```
-
+```Prisma
+model Question {
+  id          Int      @id @default(autoincrement())
+  difficulty  String
+  title       String
+  description String
+  answers     Json
+  createdAt   DateTime @default(now())
+}
+```
 ## Sample Questions
 
 The application comes pre-seeded with 9 questions:
 
 **Easy (3 questions):**
+
 - Check if a number is even
 - Find maximum of two numbers
 - Sum of first N natural numbers
 
 **Medium (3 questions):**
+
 - Check if a number is prime
 - Find factorial of a number
 - Reverse a number
 
 **Hard (3 questions):**
+
 - Binary search algorithm
 - Bubble sort algorithm
 - Find GCD using Euclidean algorithm
@@ -263,12 +300,13 @@ The pseudocode matcher performs:
 
 To test the application:
 
-1. Start MongoDB
-2. Run `npm run seed` in the backend directory
-3. Start both backend and frontend servers
-4. Navigate to `http://localhost:3000`
-5. Select a difficulty and question
-6. Submit correct/incorrect pseudocode to test validation
+1. Ensure PostgreSQL is running
+2. Run Prisma migration
+3. Run `npm run seed` in the backend directory
+4. Start both backend and frontend servers
+5. Navigate to `http://localhost:3000`
+6. Select a difficulty and question
+7. Submit correct/incorrect pseudocode to test validation
 
 ## Future Enhancements
 
@@ -289,15 +327,19 @@ To test the application:
 
 ## Troubleshooting
 
-### MongoDB Connection Error
-- Ensure MongoDB is running: `mongod` or check Windows Services
-- Verify connection string in `.env`
+### PostgreSQL Connection Error
+
+- Ensure PostgreSQL service is running
+- Verify DATABASE_URL in backend/.env
+- Confirm database name and credentials
 
 ### Port Already in Use
+
 - Backend: Change `PORT` in `backend/.env`
 - Frontend: Modify port in `package.json` start script
 
 ### API Connection Error
+
 - Ensure backend is running on port 5000
 - Check `REACT_APP_API_URL` in `frontend/.env`
 - Verify CORS is enabled in backend
@@ -309,3 +351,4 @@ MIT
 ## Contributors
 
 Built following production-quality standards with MVC architecture, comprehensive error handling, and clean code principles.
+````

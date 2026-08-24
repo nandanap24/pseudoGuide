@@ -104,3 +104,5 @@ module.exports = {
   getQuestionById,
   checkPseudocode,
 };
+
+module.exports = { getQuestions, getQuestionById, checkPseudocode };

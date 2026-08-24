@@ -33,7 +33,7 @@ function App() {
       const id = params.get("id");
       if (!id) setSelectedQuestion(null);
       else if (questions.length > 0) {
-        const found = questions.find((q) => q._id === id);
+        const found = questions.find((q) => q.id === Number(id));
         setSelectedQuestion(found || null);
       }
     };
@@ -44,7 +44,7 @@ function App() {
   const handleQuestionSelect = (question) => {
     setSelectedQuestion(question);
     setSubmissionResult(null);
-    window.history.pushState({ id: question._id }, "", `?id=${question._id}`);
+    window.history.pushState({ id: question.id }, "", `?id=${question.id}`);
   };
 
   const handleReset = () => {
@@ -61,15 +61,15 @@ function App() {
   const onNewSubmissionResult = (result) => {
     setSubmissionResult(result);
     if (result.status === "correct" && selectedQuestion) {
-      if (!solvedIds.includes(selectedQuestion._id)) {
-        setSolvedIds([...solvedIds, selectedQuestion._id]);
+      if (!solvedIds.includes(selectedQuestion.id)) {
+        setSolvedIds([...solvedIds, selectedQuestion.id]);
       }
     }
   };
 
   const filteredQuestions = questions.filter((q) => {
-    if (statusFilter === "solved") return solvedIds.includes(q._id);
-    if (statusFilter === "unsolved") return !solvedIds.includes(q._id);
+    if (statusFilter === "solved") return solvedIds.includes(q.id);
+    if (statusFilter === "unsolved") return !solvedIds.includes(q.id);
     return true;
   });
 

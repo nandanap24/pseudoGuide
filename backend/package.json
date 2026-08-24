@@ -8,6 +8,12 @@
     "dev": "nodemon server.js",
     "seed": "node utils/seedDB.js"
   },
+<<<<<<< HEAD
+  "prisma": {
+  "seed": "node prisma/seed.js"
+}
+,
+>>>>>>> origin/main
   "dependencies": {
     "@prisma/client": "^6.19.1",
     "cors": "^2.8.5",
